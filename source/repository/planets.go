@@ -1,9 +1,8 @@
 package repository
 
 import (
-	entities "aplicacao/source/domain/entity"
+	"aplicacao/source/domain/entities"
 	"log"
-	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -31,10 +30,9 @@ func FindPlanetById(id string) (*entities.Planet, error) {
 	return &result, nil
 }
 
-func UpdatePlanet(planet *entities.Planet, id string) (err error) {
+func UpdatePlanet(planet *entities.Planet, id int) (err error) {
 
-	idConv, _ := strconv.Atoi(id)
-	DB.Model(&entities.Planet{Id: idConv}).Updates(planet)
+	DB.Model(&entities.Planet{Id: id}).Updates(planet)
 
 	return nil
 }

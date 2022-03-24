@@ -1,14 +1,22 @@
 package service
 
 import (
-	entities "aplicacao/source/domain/entity"
+	"aplicacao/dto/requests"
+	"aplicacao/source/domain/entities"
 	"aplicacao/source/repository"
+	"aplicacao/source/utils"
 	"log"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func UpdatePlanet(planet *entities.Planet, id string) (err error) {
+func UpdatePlanet(request *requests.UpdatePlanetRequest, id string) (err error) {
+
+	idConv := utils.ConvertToString(id)
+
+	var planet entities.Planet
+
+	planet.UpdatePlanet(&request.Name, &request.Climate, &request.Land, &request.Atmosphere)
 
 	planetToUpdate, err := repository.FindPlanetById(id)
 
@@ -16,7 +24,7 @@ func UpdatePlanet(planet *entities.Planet, id string) (err error) {
 		log.Panic("Planet not exists")
 	}
 
-	err = repository.UpdatePlanet(planet, id)
+	err = repository.UpdatePlanet(&planet, idConv)
 
 	if err != nil {
 		log.Panic("<UpdatePlanet> An error ocurred during update", err)

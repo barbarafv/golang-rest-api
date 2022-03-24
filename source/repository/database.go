@@ -2,7 +2,7 @@ package repository
 
 import (
 	"aplicacao/source/configuration"
-	entities "aplicacao/source/domain/entity"
+	entities "aplicacao/source/domain/entities"
 	"log"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -25,7 +25,5 @@ func init() {
 
 func BuildDBConfig() string {
 	connectionString := configuration.Config.DBUser + ":" + configuration.Config.DBPass + "@" + configuration.Config.DBSource
-	//connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/dbtest?charset=utf8&parseTime=True&loc=Local", os.Getenv(DB_USER))
-	//connectionString := "root:MyApplication92@tcp(127.0.0.1:3306)/dbtest?charset=utf8&parseTime=True&loc=Local"
 	return connectionString
 }

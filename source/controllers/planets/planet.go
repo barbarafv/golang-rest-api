@@ -1,9 +1,10 @@
 package controllers
 
 import (
-	"aplicacao/source/domain/entity"
+	"aplicacao/dto/requests"
+	"aplicacao/source/domain/entities"
 	"aplicacao/source/service"
-	"log"
+	"aplicacao/source/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -22,13 +23,13 @@ func FindPlanetById(c *gin.Context) {
 }
 
 func UpdatePlanet(c *gin.Context) {
-	planet := entity.Planet{}
+	updatePlanetRequest := requests.UpdatePlanetRequest{}
 
 	id := c.Params.ByName("id")
-	readBody(c, &planet)
+	utils.ReadBody(c, &updatePlanetRequest)
 
-	service.UpdatePlanet(&planet, id)
-	c.JSON(http.StatusOK, planet)
+	service.UpdatePlanet(&updatePlanetRequest, id)
+	c.JSON(http.StatusOK, updatePlanetRequest)
 }
 
 func DeletePlanet(c *gin.Context) {
@@ -40,17 +41,9 @@ func DeletePlanet(c *gin.Context) {
 }
 
 func InsertPlanet(c *gin.Context) {
-	planet := entity.Planet{}
+	planet := entities.Planet{}
 
-	readBody(c, &planet)
+	utils.ReadBody(c, &planet)
 	service.InsertPlanet(&planet)
 	c.JSON(http.StatusOK, planet)
-}
-
-func readBody(c *gin.Context, entity any) {
-	err := c.BindJSON(&entity)
-
-	if err != nil {
-		log.Panic("<readBody> Error to bind JSON")
-	}
 }
