@@ -1,8 +1,9 @@
 package service
 
 import (
-	"aplicacao/dto/requests"
 	"aplicacao/source/domain/entities"
+	"aplicacao/source/dto/requests"
+	"aplicacao/source/dto/responses"
 	"aplicacao/source/repository"
 	"aplicacao/source/utils"
 	"log"
@@ -10,69 +11,87 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func UpdatePlanet(request *requests.UpdatePlanetRequest, id string) (err error) {
-
-	idConv := utils.ConvertToString(id)
+func UpdatePlanet(request *requests.PlanetRequest, id int) {
 
 	var planet entities.Planet
 
+	validadePlanet(id)
+
 	planet.UpdatePlanet(&request.Name, &request.Climate, &request.Land, &request.Atmosphere)
 
-	planetToUpdate, err := repository.FindPlanetById(id)
-
-	if planetToUpdate == nil {
-		log.Panic("Planet not exists")
-	}
-
-	err = repository.UpdatePlanet(&planet, idConv)
+	err := repository.UpdatePlanet(&planet, id)
 
 	if err != nil {
 		log.Panic("<UpdatePlanet> An error ocurred during update", err)
 	}
-	return nil
+
 }
 
-func FindPlanets() *[]entities.Planet {
-	result, err := repository.FindPlanets()
+func FindPlanets() *[]responses.PlanetResponse {
+	planetsResponse := []responses.PlanetResponse{}
+	planets, err := repository.FindPlanets()
+
+	for _, planet := range *planets {
+		idConv := utils.ConvertToString(planet.Id)
+		planetsResponse = append(planetsResponse, responses.CreatePlanetResponse(idConv, planet.Name, planet.Climate, planet.Land, planet.Atmosphere))
+	}
 
 	if err != nil {
 		log.Panic("<FindPlanetById> An error ocurred during select", err)
 	}
-	return result
+	return &planetsResponse
 }
 
-func FindPlanetById(id string) *entities.Planet {
+func FindPlanetById(id int) *responses.PlanetResponse {
+
 	result, err := repository.FindPlanetById(id)
+
+	utils.ConvertToString(id)
+
+	planetResponse := responses.CreatePlanetResponse(utils.ConvertToString(id), result.Name, result.Climate, result.Land, result.Atmosphere)
 
 	if err != nil {
 		log.Panic("<FindPlanetById> An error ocurred during select by id", err)
 	}
-	return result
+	return &planetResponse
 }
 
-func InsertPlanet(planet *entities.Planet) (err error) {
+func InsertPlanet(request *requests.PlanetRequest) {
+
+	planet, err := entities.CreatePlanet(request.Name, request.Climate, request.Land, request.Atmosphere)
 
 	planetByName := repository.ExistsPlanetByName(planet.Name)
 
 	if planetByName {
 		log.Panic("<InsertPlanet> Planet name aready exist!")
 	}
-	err = repository.InsertPlanet(planet)
+	err = repository.InsertPlanet(&planet)
 
 	if err != nil {
 		log.Panic("<InsertPlanet> An error ocurred during insert", err)
 	}
-	return nil
 }
 
-func DeletePlanet(id string) (err error) {
+func DeletePlanet(id int) {
 
-	var planet entities.Planet
-
-	err = repository.DeletePlanet(&planet, id)
+	err := repository.DeletePlanet(id)
 
 	if err != nil {
 		log.Panic("<DeletePlanet> An error ocurred during delete", err)
 	}
+}
+
+func validadePlanet(id int) error {
+
+	planetToUpdate, err := repository.FindPlanetById(id)
+
+	if err != nil {
+		log.Panic("<FindPlanetById> Error to find planet by id", err)
+	}
+
+	if planetToUpdate == nil {
+		return entities.ErrPlanetNotExists
+	}
+
 	return nil
 }

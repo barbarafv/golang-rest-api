@@ -17,7 +17,6 @@ var Config dBconfig
 
 func init() {
 	loadConfig(".")
-	log.Println(Config)
 }
 
 func loadConfig(path string) {

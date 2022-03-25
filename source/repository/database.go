@@ -2,7 +2,7 @@ package repository
 
 import (
 	"aplicacao/source/configuration"
-	entities "aplicacao/source/domain/entities"
+	"aplicacao/source/domain/entities"
 	"log"
 
 	_ "github.com/go-sql-driver/mysql"

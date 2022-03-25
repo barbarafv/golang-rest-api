@@ -1,8 +1,8 @@
 package test
 
 import (
-	_ "aplicacao/source/1test/fixture"
-	"aplicacao/source/domain/entity"
+	"aplicacao/source/domain/entities"
+	_ "aplicacao/source/planet_test/fixture"
 	"aplicacao/source/repository"
 	"aplicacao/source/routes"
 	"encoding/json"
@@ -36,7 +36,7 @@ func TestUpdatePlanet(t *testing.T) {
 
 	w := httptest.NewRecorder()
 
-	planet := entity.Planet{Name: "marte", Climate: "tempered", Land: "florests and mountains", Atmosphere: "Type III"}
+	planet := entities.Planet{Name: "marte", Climate: "tempered", Land: "florests and mountains", Atmosphere: "Type III"}
 
 	jsonPlanet, _ := json.Marshal(planet)
 

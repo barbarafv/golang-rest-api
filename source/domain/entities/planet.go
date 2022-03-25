@@ -5,7 +5,9 @@ import (
 )
 
 var (
-	ErrNameRequired = errors.New("Planet name is required")
+	ErrNameRequired    = errors.New("Planet name is required")
+	ErrPlanetNotExists = errors.New("Planet not exists")
+	ErrPlanetExists    = errors.New("Planet name aready exist")
 )
 
 type Planet struct {
@@ -49,6 +51,13 @@ func (p *Planet) UpdatePlanet(newName *string, newClimate *string, newLand *stri
 	return nil
 }
 
-func (b *Planet) TableName() string {
-	return "planet"
+// loads the planet from database data. It shouldn't be used for anything else.
+func UnmarshalPlanet(id int, name string, climate string, land string, atmosphere string) Planet {
+	return Planet{
+		Id:         id,
+		Name:       name,
+		Climate:    climate,
+		Land:       land,
+		Atmosphere: atmosphere,
+	}
 }

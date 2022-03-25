@@ -1,7 +1,6 @@
-package responses
+package requests
 
-type PlanetResponse struct {
-	Id         string `json:"id"`
+type PlanetRequest struct {
 	Name       string `json:"name"`
 	Climate    string `json:"climate"`
 	Land       string `json:"land"`
