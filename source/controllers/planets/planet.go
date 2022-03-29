@@ -15,8 +15,7 @@ func FindPlanets(c *gin.Context) {
 }
 
 func FindPlanetById(c *gin.Context) {
-	id := c.Params.ByName("id")
-	idConv := utils.ConvertToInt(id)
+	idConv := utils.ConvertToInt(c.Params.ByName("id"))
 
 	result := service.FindPlanetById(idConv)
 	c.JSON(http.StatusOK, result)

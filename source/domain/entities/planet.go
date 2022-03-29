@@ -11,11 +11,15 @@ var (
 )
 
 type Planet struct {
-	Id         int
-	Name       string
-	Climate    string
-	Land       string
-	Atmosphere string
+	Id         int    `gorm:"column:id;primaryKey"`
+	Name       string `gorm:"column:name"`
+	Climate    string `gorm:"column:climate"`
+	Land       string `gorm:"column:land"`
+	Atmosphere string `gorm:"column:atmosphere"`
+}
+
+func (b *Planet) TableName() string {
+	return "planet"
 }
 
 func CreatePlanet(name string, climate string, land string, atmosphere string) (Planet, error) {
@@ -49,15 +53,4 @@ func (p *Planet) UpdatePlanet(newName *string, newClimate *string, newLand *stri
 		return ErrNameRequired
 	}
 	return nil
-}
-
-// loads the planet from database data. It shouldn't be used for anything else.
-func UnmarshalPlanet(id int, name string, climate string, land string, atmosphere string) Planet {
-	return Planet{
-		Id:         id,
-		Name:       name,
-		Climate:    climate,
-		Land:       land,
-		Atmosphere: atmosphere,
-	}
 }

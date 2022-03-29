@@ -16,12 +16,12 @@ type dBconfig struct {
 var Config dBconfig
 
 func init() {
-	loadConfig(".")
+	loadConfig("source/configuration/enviroments")
 }
 
 func loadConfig(path string) {
 	viper.AddConfigPath(path)
-	viper.SetConfigName("app")
+	viper.SetConfigName("local")
 	viper.SetConfigType("env")
 
 	viper.AutomaticEnv()

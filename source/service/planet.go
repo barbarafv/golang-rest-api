@@ -2,10 +2,12 @@ package service
 
 import (
 	"aplicacao/source/domain/entities"
+	"aplicacao/source/domain/exception"
 	"aplicacao/source/dto/requests"
 	"aplicacao/source/dto/responses"
 	"aplicacao/source/repository"
 	"aplicacao/source/utils"
+	"fmt"
 	"log"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -13,13 +15,11 @@ import (
 
 func UpdatePlanet(request *requests.PlanetRequest, id int) {
 
-	var planet entities.Planet
-
 	validadePlanet(id)
 
-	planet.UpdatePlanet(&request.Name, &request.Climate, &request.Land, &request.Atmosphere)
+	planet, err := CreatePlanet(request)
 
-	err := repository.UpdatePlanet(&planet, id)
+	err = repository.UpdatePlanet(&planet, id)
 
 	if err != nil {
 		log.Panic("<UpdatePlanet> An error ocurred during update", err)
@@ -33,7 +33,7 @@ func FindPlanets() *[]responses.PlanetResponse {
 
 	for _, planet := range *planets {
 		idConv := utils.ConvertToString(planet.Id)
-		planetsResponse = append(planetsResponse, responses.CreatePlanetResponse(idConv, planet.Name, planet.Climate, planet.Land, planet.Atmosphere))
+		planetsResponse = append(planetsResponse, CreatePlanetResponse(idConv, &planet))
 	}
 
 	if err != nil {
@@ -46,9 +46,11 @@ func FindPlanetById(id int) *responses.PlanetResponse {
 
 	result, err := repository.FindPlanetById(id)
 
-	utils.ConvertToString(id)
+	if err != nil {
+		log.Panic(exception.NewNotFoundException(fmt.Sprintf("Planet %d was not found", id)))
+	}
 
-	planetResponse := responses.CreatePlanetResponse(utils.ConvertToString(id), result.Name, result.Climate, result.Land, result.Atmosphere)
+	planetResponse := CreatePlanetResponse(utils.ConvertToString(id), result)
 
 	if err != nil {
 		log.Panic("<FindPlanetById> An error ocurred during select by id", err)
@@ -58,7 +60,7 @@ func FindPlanetById(id int) *responses.PlanetResponse {
 
 func InsertPlanet(request *requests.PlanetRequest) {
 
-	planet, err := entities.CreatePlanet(request.Name, request.Climate, request.Land, request.Atmosphere)
+	planet, err := CreatePlanet(request)
 
 	planetByName := repository.ExistsPlanetByName(planet.Name)
 
@@ -94,4 +96,26 @@ func validadePlanet(id int) error {
 	}
 
 	return nil
+}
+
+func CreatePlanetResponse(id string, planet *entities.Planet) (response responses.PlanetResponse) {
+
+	return responses.PlanetResponse{
+		Id:         id,
+		Name:       planet.Name,
+		Climate:    planet.Climate,
+		Land:       planet.Land,
+		Atmosphere: planet.Atmosphere,
+	}
+
+}
+
+func CreatePlanet(request *requests.PlanetRequest) (entities.Planet, error) {
+
+	return entities.Planet{
+		Name:       request.Name,
+		Climate:    request.Climate,
+		Land:       request.Land,
+		Atmosphere: request.Atmosphere,
+	}, nil
 }
