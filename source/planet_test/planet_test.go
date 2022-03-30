@@ -3,8 +3,10 @@ package test
 import (
 	"aplicacao/source/domain/entities"
 	_ "aplicacao/source/planet_test/fixture"
+	"aplicacao/source/planet_test/testcontainers"
 	"aplicacao/source/repository"
 	"aplicacao/source/routes"
+	"context"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -47,7 +49,7 @@ func TestUpdatePlanet(t *testing.T) {
 
 	assert.Equal(t, 200, w.Code)
 
-	planetAfterUpdate, _ := repository.FindPlanetById("1")
+	planetAfterUpdate, _ := repository.FindPlanetById(1)
 
 	assert.Equal(t, "marte", planetAfterUpdate.Name)
 	assert.Equal(t, "tempered", planetAfterUpdate.Climate)
@@ -74,5 +76,12 @@ func TestGetPlanetById(t *testing.T) {
 
 	assert.Equal(t, 200, w.Code)
 	t.Log(w.Body.String())
+}
 
+func TestA(t *testing.T) {
+	ctx := context.Background()
+	containerResult := testcontainers.SetupMysqlContainer(t, ctx, true)
+	defer containerResult.Container.Terminate(ctx)
+
+	t.Logf("%s", containerResult.ConnectionURI())
 }

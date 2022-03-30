@@ -23,7 +23,7 @@ func FindPlanetById(id int) (*entities.Planet, error) {
 
 	planet := entities.Planet{}
 
-	dbResult := DB.Where("id = ?", id).First(&planet)
+	dbResult := DB.Where("id = ?", id).First(&entities.Planet{})
 
 	if err := dbResult.Error; err != nil {
 		return nil, err
@@ -31,31 +31,16 @@ func FindPlanetById(id int) (*entities.Planet, error) {
 	return &planet, nil
 }
 
-func UpdatePlanet(planet *entities.Planet, id int) (err error) {
-
-	if err := DB.Model(&entities.Planet{Id: id}).Updates(planet).Error; err != nil {
-		return err
-	}
-
-	return nil
+func UpdatePlanet(planet *entities.Planet, id int) error {
+	return DB.Model(&entities.Planet{Id: id}).Updates(planet).Error
 }
 
-func DeletePlanet(id int) (err error) {
-
-	planet := entities.Planet{}
-
-	if err := DB.Where("id = ?", id).Delete(planet).Error; err != nil {
-		return err
-	}
-	return nil
+func DeletePlanet(id int) error {
+	return DB.Where("id = ?", id).Delete(entities.Planet{}).Error
 }
 
-func InsertPlanet(planet *entities.Planet) (err error) {
-
-	if err := DB.Create(planet).Error; err != nil {
-		return err
-	}
-	return nil
+func InsertPlanet(planet *entities.Planet) error {
+	return DB.Create(planet).Error
 }
 
 func ExistsPlanetByName(name string) bool {
@@ -63,7 +48,5 @@ func ExistsPlanetByName(name string) bool {
 	result := entities.Planet{}
 	dbResult := DB.Where("name = ?", name).Find(&result)
 
-	exists := dbResult.RowsAffected > 0
-
-	return exists
+	return dbResult.RowsAffected > 0
 }
