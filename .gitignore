@@ -10,4 +10,4 @@
 *.tmp
 
 ## VSCODE
-.vscode
+*.vscode
