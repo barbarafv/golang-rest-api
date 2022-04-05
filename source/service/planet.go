@@ -1,12 +1,12 @@
 package service
 
 import (
-	"aplicacao/source/domain/entities"
-	"aplicacao/source/domain/exception"
-	"aplicacao/source/dto/requests"
-	"aplicacao/source/dto/responses"
-	"aplicacao/source/repository"
-	"aplicacao/source/utils"
+	"app/source/domain/entities"
+	"app/source/domain/exception"
+	"app/source/dto/requests"
+	"app/source/dto/responses"
+	"app/source/repository"
+	"app/source/utils"
 	"fmt"
 	"log"
 

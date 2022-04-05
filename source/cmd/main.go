@@ -1,7 +1,7 @@
 package main
 
 import (
-	"aplicacao/source/routes"
+	"app/source/routes"
 )
 
 func main() {

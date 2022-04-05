@@ -1,25 +1,25 @@
 package repository
 
 import (
-	"aplicacao/source/configuration"
-	"aplicacao/source/domain/entities"
+	"app/source/configuration"
+	"app/source/domain/entities"
 	"log"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 )
 
-var DB *gorm.DB
+var db *gorm.DB
 
 func init() {
 	var err error
-	DB, err = gorm.Open(configuration.Config.DBDriver, BuildDBConfig())
+	db, err = gorm.Open(configuration.Config.DBDriver, BuildDBConfig())
 
 	if err != nil {
 		log.Panic("An error ocurred during try to connect a database ", err)
 	}
 
-	DB.AutoMigrate(&entities.Planet{})
+	db.AutoMigrate(&entities.Planet{})
 
 }
 

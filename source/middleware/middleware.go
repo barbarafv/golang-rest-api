@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"aplicacao/source/domain/exception"
+	"app/source/domain/exception"
 	"log"
 	"net/http"
 

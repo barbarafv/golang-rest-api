@@ -1,11 +1,11 @@
 package test
 
 import (
-	"aplicacao/source/domain/entities"
-	_ "aplicacao/source/planet_test/fixture"
-	"aplicacao/source/planet_test/testcontainers"
-	"aplicacao/source/repository"
-	"aplicacao/source/routes"
+	"app/source/domain/entities"
+	_ "app/source/planet_test/fixture"
+	"app/source/planet_test/testcontainers"
+	"app/source/repository"
+	"app/source/routes"
 	"context"
 	"encoding/json"
 	"net/http"
@@ -13,16 +13,18 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 )
 
+var router *gin.Engine
+
 func init() {
+	router = routes.InitRouter()
 
 }
 
 func TestInsertPlanet(t *testing.T) {
-	router := routes.InitRouter()
-
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/planets", nil)
 
@@ -33,8 +35,6 @@ func TestInsertPlanet(t *testing.T) {
 }
 
 func TestUpdatePlanet(t *testing.T) {
-
-	router := routes.InitRouter()
 
 	w := httptest.NewRecorder()
 
@@ -58,7 +58,6 @@ func TestUpdatePlanet(t *testing.T) {
 
 }
 func TestGetPlanet(t *testing.T) {
-	router := routes.InitRouter()
 
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/planets", nil)
@@ -68,7 +67,6 @@ func TestGetPlanet(t *testing.T) {
 }
 
 func TestGetPlanetById(t *testing.T) {
-	router := routes.InitRouter()
 
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/planets/1", nil)

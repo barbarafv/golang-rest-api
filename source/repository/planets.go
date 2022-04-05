@@ -1,52 +1,34 @@
 package repository
 
 import (
-	"aplicacao/source/domain/entities"
-	"log"
+	"app/source/domain/entities"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
 func FindPlanets() (*[]entities.Planet, error) {
-
-	var planets []entities.Planet
-	dbResult := DB.Find(&planets)
-
-	if err := dbResult.Error; err != nil {
-		log.Panic("<FindPlanets> Error to find Planets ", err)
-		return nil, err
-	}
-	return &planets, nil
+	planets := []entities.Planet{}
+	return &planets, db.Find(&planets).Error
 }
 
 func FindPlanetById(id int) (*entities.Planet, error) {
-
 	planet := entities.Planet{}
-
-	dbResult := DB.Where("id = ?", id).First(&entities.Planet{})
-
-	if err := dbResult.Error; err != nil {
-		return nil, err
-	}
-	return &planet, nil
+	return &planet, db.Where("id = ?", id).First(&entities.Planet{}).Error
 }
 
 func UpdatePlanet(planet *entities.Planet, id int) error {
-	return DB.Model(&entities.Planet{Id: id}).Updates(planet).Error
+	return db.Model(&entities.Planet{Id: id}).Updates(planet).Error
 }
 
 func DeletePlanet(id int) error {
-	return DB.Where("id = ?", id).Delete(entities.Planet{}).Error
+	return db.Where("id = ?", id).Delete(entities.Planet{}).Error
 }
 
 func InsertPlanet(planet *entities.Planet) error {
-	return DB.Create(planet).Error
+	return db.Create(planet).Error
 }
 
 func ExistsPlanetByName(name string) bool {
-
-	result := entities.Planet{}
-	dbResult := DB.Where("name = ?", name).Find(&result)
-
+	dbResult := db.Where("name = ?", name).Find(&entities.Planet{})
 	return dbResult.RowsAffected > 0
 }

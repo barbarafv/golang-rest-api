@@ -1,9 +1,9 @@
 package controllers
 
 import (
-	"aplicacao/source/dto/requests"
-	"aplicacao/source/service"
-	"aplicacao/source/utils"
+	"app/source/dto/requests"
+	"app/source/service"
+	"app/source/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
