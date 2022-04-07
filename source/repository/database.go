@@ -11,7 +11,7 @@ import (
 
 var db *gorm.DB
 
-func init() {
+func OpenConnectionDb() *gorm.DB {
 	var err error
 	db, err = gorm.Open(configuration.Config.DBDriver, BuildDBConfig())
 
@@ -20,6 +20,8 @@ func init() {
 	}
 
 	db.AutoMigrate(&entities.Planet{})
+
+	return db
 
 }
 

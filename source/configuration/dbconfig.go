@@ -11,6 +11,7 @@ type dBconfig struct {
 	DBSource string `mapstructure:"DB_SOURCE"`
 	DBUser   string `mapstructure:"DB_USER"`
 	DBPass   string `mapstructure:"DB_PASS"`
+	DBName   string `mapstructure:"DB_NAME"`
 }
 
 var Config dBconfig
@@ -21,7 +22,7 @@ func init() {
 
 func loadConfig(path string) {
 	viper.AddConfigPath(path)
-	viper.SetConfigName("local")
+	viper.SetConfigName("test")
 	viper.SetConfigType("env")
 
 	viper.AutomaticEnv()

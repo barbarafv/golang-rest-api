@@ -1,7 +1,7 @@
 package routes
 
 import (
-	controllers "app/source/controllers/planets"
+	controllers "app/source/controllers"
 
 	"github.com/gin-gonic/gin"
 )

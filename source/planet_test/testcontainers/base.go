@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"testing"
 
 	"github.com/docker/go-connections/nat"
 	"github.com/testcontainers/testcontainers-go"
@@ -27,7 +26,7 @@ func (g *TestLogConsumer) Accept(l testcontainers.Log) {
 	log.Print(string(l.Content))
 }
 
-func setupContainer(t *testing.T,
+func setupContainer(
 	ctx context.Context,
 	containerRequest testcontainers.ContainerRequest,
 	nPort nat.Port,
@@ -39,17 +38,17 @@ func setupContainer(t *testing.T,
 	})
 
 	if err != nil {
-		t.Errorf("Failed to start container %+v, with error: %v", containerRequest, err)
+		log.Panicf("Failed to start container %+v, with error: %v", containerRequest, err)
 	}
 
 	host, err := container.Host(ctx)
 	if err != nil {
-		t.Errorf("Failed to retrive host %+v, with error: %v", containerRequest, err)
+		log.Panicf("Failed to retrive host %+v, with error: %v", containerRequest, err)
 	}
 
 	port, err := container.MappedPort(ctx, nPort)
 	if err != nil {
-		t.Errorf("Failed to retrive port %+v, with error: %v", containerRequest, err)
+		log.Panicf("Failed to retrive port %+v, with error: %v", containerRequest, err)
 	}
 
 	if printContainerLogs {
@@ -57,7 +56,7 @@ func setupContainer(t *testing.T,
 
 		err = container.StartLogProducer(ctx)
 		if err != nil {
-			t.Errorf("%s", err)
+			log.Panicf("%s", err)
 		}
 		container.FollowOutput(&logConsumer)
 	}

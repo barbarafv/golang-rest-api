@@ -1,14 +1,14 @@
 package service
 
 import (
+	"app/source/controllers/requests"
+	"app/source/controllers/responses"
 	"app/source/domain/entities"
 	"app/source/domain/exception"
-	"app/source/dto/requests"
-	"app/source/dto/responses"
 	"app/source/repository"
-	"app/source/utils"
 	"fmt"
 	"log"
+	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -17,9 +17,9 @@ func UpdatePlanet(request *requests.PlanetRequest, id int) {
 
 	validadePlanet(id)
 
-	planet, err := CreatePlanet(request)
+	planet := CreatePlanet(request)
 
-	err = repository.UpdatePlanet(&planet, id)
+	err := repository.UpdatePlanet(&planet, id)
 
 	if err != nil {
 		log.Panic("<UpdatePlanet> An error ocurred during update", err)
@@ -31,9 +31,9 @@ func FindPlanets() *[]responses.PlanetResponse {
 	planetsResponse := []responses.PlanetResponse{}
 	planets, err := repository.FindPlanets()
 
-	for _, planet := range *planets {
-		idConv := utils.ConvertToString(planet.Id)
-		planetsResponse = append(planetsResponse, CreatePlanetResponse(idConv, &planet))
+	for _, planet := range planets {
+		planetsResponse = append(planetsResponse,
+			CreatePlanetResponse(strconv.Itoa(planet.Id), &planet))
 	}
 
 	if err != nil {
@@ -50,7 +50,7 @@ func FindPlanetById(id int) *responses.PlanetResponse {
 		log.Panic(exception.NewNotFoundException(fmt.Sprintf("Planet %d was not found", id)))
 	}
 
-	planetResponse := CreatePlanetResponse(utils.ConvertToString(id), result)
+	planetResponse := CreatePlanetResponse(strconv.Itoa(id), result)
 
 	if err != nil {
 		log.Panic("<FindPlanetById> An error ocurred during select by id", err)
@@ -60,14 +60,14 @@ func FindPlanetById(id int) *responses.PlanetResponse {
 
 func InsertPlanet(request *requests.PlanetRequest) {
 
-	planet, err := CreatePlanet(request)
+	planet := CreatePlanet(request)
 
 	planetByName := repository.ExistsPlanetByName(planet.Name)
 
 	if planetByName {
 		log.Panic("<InsertPlanet> Planet name aready exist!")
 	}
-	err = repository.InsertPlanet(&planet)
+	err := repository.InsertPlanet(&planet)
 
 	if err != nil {
 		log.Panic("<InsertPlanet> An error ocurred during insert", err)
@@ -110,12 +110,12 @@ func CreatePlanetResponse(id string, planet *entities.Planet) (response response
 
 }
 
-func CreatePlanet(request *requests.PlanetRequest) (entities.Planet, error) {
+func CreatePlanet(request *requests.PlanetRequest) entities.Planet {
 
 	return entities.Planet{
 		Name:       request.Name,
 		Climate:    request.Climate,
 		Land:       request.Land,
 		Atmosphere: request.Atmosphere,
-	}, nil
+	}
 }

@@ -6,14 +6,17 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func FindPlanets() (*[]entities.Planet, error) {
+func FindPlanets() ([]entities.Planet, error) {
 	planets := []entities.Planet{}
-	return &planets, db.Find(&planets).Error
+
+	return planets, db.Find(&planets).Error
 }
 
 func FindPlanetById(id int) (*entities.Planet, error) {
-	planet := entities.Planet{}
-	return &planet, db.Where("id = ?", id).First(&entities.Planet{}).Error
+	planets := entities.Planet{}
+
+	err := db.Where("id = ?", id).First(&planets).Error
+	return &planets, err
 }
 
 func UpdatePlanet(planet *entities.Planet, id int) error {
