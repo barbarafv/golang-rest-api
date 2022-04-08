@@ -4,6 +4,7 @@ import (
 	"app/source/domain/entities"
 
 	_ "github.com/go-sql-driver/mysql"
+	"gorm.io/gorm"
 )
 
 func FindPlanets() ([]entities.Planet, error) {
@@ -24,7 +25,14 @@ func UpdatePlanet(planet *entities.Planet, id int) error {
 }
 
 func DeletePlanet(id int) error {
-	return db.Where("id = ?", id).Delete(entities.Planet{}).Error
+
+	dbResult := db.Where("id = ?", id).Delete(entities.Planet{})
+
+	if dbResult.RowsAffected < 1 {
+		return gorm.ErrRecordNotFound
+	}
+
+	return dbResult.Error
 }
 
 func InsertPlanet(planet *entities.Planet) error {

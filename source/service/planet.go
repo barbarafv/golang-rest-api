@@ -15,11 +15,15 @@ import (
 
 func UpdatePlanet(request *requests.PlanetRequest, id int) {
 
-	validadePlanet(id)
+	err := validadePlanet(id)
+
+	if err != nil {
+		log.Panic(err)
+	}
 
 	planet := CreatePlanet(request)
 
-	err := repository.UpdatePlanet(&planet, id)
+	err = repository.UpdatePlanet(&planet, id)
 
 	if err != nil {
 		log.Panic("<UpdatePlanet> An error ocurred during update", err)
@@ -79,7 +83,7 @@ func DeletePlanet(id int) {
 	err := repository.DeletePlanet(id)
 
 	if err != nil {
-		log.Panic("<DeletePlanet> An error ocurred during delete", err)
+		log.Panic("<DeletePlanet> An error ocurred during delete: ", err)
 	}
 }
 

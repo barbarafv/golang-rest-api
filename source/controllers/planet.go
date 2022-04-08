@@ -5,7 +5,6 @@ import (
 	"app/source/service"
 	"app/source/utils"
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -16,9 +15,7 @@ func FindPlanets(c *gin.Context) {
 }
 
 func FindPlanetById(c *gin.Context) {
-	idConv, _ := strconv.Atoi(c.Params.ByName("id"))
-
-	result := service.FindPlanetById(idConv)
+	result := service.FindPlanetById(utils.ConvertToInt(c.Params.ByName("id")))
 	c.JSON(http.StatusOK, result)
 }
 
@@ -29,17 +26,15 @@ func UpdatePlanet(c *gin.Context) {
 
 	utils.ReadBody(c, &updatePlanetRequest)
 
-	idConv, _ := strconv.Atoi(id)
-	service.UpdatePlanet(&updatePlanetRequest, idConv)
+	service.UpdatePlanet(&updatePlanetRequest, utils.ConvertToInt(id))
 	c.JSON(http.StatusOK, gin.H{"id" + id: "is updated"})
 }
 
 func DeletePlanet(c *gin.Context) {
 
 	id := c.Params.ByName("id")
-	idConv, _ := strconv.Atoi(id)
 
-	service.DeletePlanet(idConv)
+	service.DeletePlanet(utils.ConvertToInt(id))
 	c.JSON(http.StatusOK, gin.H{"id" + id: "is deleted"})
 }
 
