@@ -89,6 +89,23 @@ func TestInsertPlanetThatAreadyExist(t *testing.T) {
 				Land:       "random",
 				Atmosphere: "random",
 			}).Run(router, func(response gofight.HTTPResponse, request gofight.HTTPRequest) {
+			assert.Equal(t, http.StatusBadRequest, response.Code)
+		})
+	})
+}
+
+func TestInsertPlanetWithoutName(t *testing.T) {
+
+	RunTest(func() {
+		rest := &gofight.RequestConfig{Debug: true}
+
+		rest.POST("/planets").
+			SetJSONInterface(requests.PlanetRequest{
+				Name:       "",
+				Climate:    "random",
+				Land:       "random",
+				Atmosphere: "random",
+			}).Run(router, func(response gofight.HTTPResponse, request gofight.HTTPRequest) {
 			assert.Equal(t, http.StatusInternalServerError, response.Code)
 		})
 	})

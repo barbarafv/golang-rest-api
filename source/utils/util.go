@@ -8,7 +8,7 @@ import (
 )
 
 func ReadBody(c *gin.Context, request any) {
-	err := c.BindJSON(&request)
+	err := c.ShouldBindJSON(&request)
 
 	if err != nil {
 		log.Panic("<readBody> Error to bind JSON", err)

@@ -7,9 +7,10 @@ import (
 )
 
 func InitRouter() *gin.Engine {
-	router := gin.Default()
-	bindPlanetRoutes(router)
+	router := gin.New()
+	router.Use(gin.Logger())
 	middleware.BindMiddlewares(router)
+	bindPlanetRoutes(router)
 
 	return router
 }
