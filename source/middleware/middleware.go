@@ -9,14 +9,11 @@ import (
 )
 
 func BindMiddlewares(router *gin.Engine) {
-	log.Println("BindMiddlewares")
 	router.Use(gin.CustomRecovery(exceptionMiddleware))
 }
 
 func exceptionMiddleware(c *gin.Context, recovered interface{}) {
-	except, ok := recovered.(*exception.HttpException)
-
-	if ok {
+	if except, ok := recovered.(*exception.HttpException); ok {
 		c.String(except.StatusCode, except.Message)
 	} else {
 		log.Printf("Exception not mapped: %s", recovered)

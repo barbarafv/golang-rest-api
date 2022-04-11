@@ -5,7 +5,6 @@ import (
 	"app/source/domain/entities"
 	"log"
 
-	"github.com/DATA-DOG/go-txdb"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 )
@@ -14,7 +13,6 @@ var db *gorm.DB
 
 func OpenConnectionDb() *gorm.DB {
 	var err error
-	txdb.Register("txdb", "mysql", BuildDBConfig())
 	db, err = gorm.Open(configuration.Config.DBDriver, BuildDBConfig())
 
 	if err != nil {

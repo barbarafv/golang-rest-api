@@ -3,7 +3,6 @@ package repository
 import (
 	"app/source/domain/entities"
 
-	_ "github.com/go-sql-driver/mysql"
 	"gorm.io/gorm"
 )
 

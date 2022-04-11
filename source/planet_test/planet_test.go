@@ -106,7 +106,7 @@ func TestInsertPlanetWithoutName(t *testing.T) {
 				Land:       "random",
 				Atmosphere: "random",
 			}).Run(router, func(response gofight.HTTPResponse, request gofight.HTTPRequest) {
-			assert.Equal(t, http.StatusInternalServerError, response.Code)
+			assert.Equal(t, http.StatusBadRequest, response.Code)
 		})
 	})
 }
@@ -150,7 +150,7 @@ func TestUpdatePlanetThatNotExist(t *testing.T) {
 				Land:       "florests and mountains",
 				Atmosphere: "Type III",
 			}).Run(router, func(response gofight.HTTPResponse, request gofight.HTTPRequest) {
-			assert.Equal(t, http.StatusInternalServerError, response.Code)
+			assert.Equal(t, http.StatusNotFound, response.Code)
 		})
 	})
 
@@ -220,7 +220,7 @@ func TestDeletePlanet(t *testing.T) {
 	})
 }
 
-func TestDeleteNotExistPlanet(t *testing.T) {
+func TestDeletePlanetNotExist(t *testing.T) {
 
 	RunTest(func() {
 		rest := &gofight.RequestConfig{Debug: true}
