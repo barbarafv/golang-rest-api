@@ -13,4 +13,7 @@ func bindPlanetRoutes(router *gin.Engine) {
 	planets.POST("", controllers.InsertPlanet)
 	planets.PUT("/:id", controllers.UpdatePlanet)
 	planets.DELETE("/:id", controllers.DeletePlanet)
+
+	users := router.Group("/users")
+	users.POST("", controllers.InsertUser)
 }

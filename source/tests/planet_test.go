@@ -1,61 +1,19 @@
-package test
+package tests
 
 import (
 	_ "app/source/_testinit/fixture"
-	"app/source/configuration"
 	"app/source/controllers/requests"
 	"app/source/domain/entities"
-	"app/source/planet_test/testcontainers"
-	"app/source/planet_test/testutils"
 	"app/source/repository"
-	"app/source/routes"
-	"log"
 	"net/http"
-	"os"
 	"testing"
-	"time"
 
 	"github.com/appleboy/gofight/v2"
-	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
-	"gorm.io/gorm"
 )
 
-var router *gin.Engine
-var mysqlContainer testcontainers.ContainerResult
-var db *gorm.DB
-
-var RunTest = testutils.CreateForEach(setUp, tearDown)
-
-func TestMain(m *testing.M) {
-	log.Println("Starting test setup")
-	start := time.Now()
-	BeforeAll()
-	log.Printf("Setup took %s seconds\n", time.Since(start))
-	exitVal := m.Run()
-	os.Exit(exitVal)
-}
-
-func BeforeAll() {
-	router = routes.InitRouter()
-	mysqlContainer = testcontainers.SetupMysqlContainer(
-		&testcontainers.Testcontainer{
-			Database:     configuration.Config.DBName,
-			RootPassword: configuration.Config.DBPass,
-		},
-	)
-	repository.OpenConnectionDb()
-}
-
-func setUp() {
-	repository.AutoMigrate()
-}
-
-func tearDown() {
-	repository.DropAll()
-}
 func TestInsertPlanet(t *testing.T) {
-	RunTest(func() {
+	runTest(func() {
 		rest := &gofight.RequestConfig{Debug: true}
 
 		rest.POST("/planets").
@@ -76,7 +34,7 @@ func TestInsertPlanet(t *testing.T) {
 
 func TestInsertPlanetThatAreadyExist(t *testing.T) {
 
-	RunTest(func() {
+	runTest(func() {
 		rest := &gofight.RequestConfig{Debug: true}
 
 		repository.InsertPlanet(&entities.Planet{Id: 1, Name: "marte", Land: "random",
@@ -96,7 +54,7 @@ func TestInsertPlanetThatAreadyExist(t *testing.T) {
 
 func TestInsertPlanetWithoutName(t *testing.T) {
 
-	RunTest(func() {
+	runTest(func() {
 		rest := &gofight.RequestConfig{Debug: true}
 
 		rest.POST("/planets").
@@ -113,7 +71,7 @@ func TestInsertPlanetWithoutName(t *testing.T) {
 
 func TestUpdatePlanet(t *testing.T) {
 
-	RunTest(func() {
+	runTest(func() {
 		rest := &gofight.RequestConfig{Debug: true}
 
 		repository.InsertPlanet(&entities.Planet{Id: 1, Name: "marte", Land: "random",
@@ -140,7 +98,7 @@ func TestUpdatePlanet(t *testing.T) {
 
 func TestUpdatePlanetThatNotExist(t *testing.T) {
 
-	RunTest(func() {
+	runTest(func() {
 		rest := &gofight.RequestConfig{Debug: true}
 
 		rest.PUT("/planets/1").
@@ -157,7 +115,7 @@ func TestUpdatePlanetThatNotExist(t *testing.T) {
 }
 func TestGetPlanet(t *testing.T) {
 
-	RunTest(func() {
+	runTest(func() {
 		rest := &gofight.RequestConfig{Debug: true}
 
 		repository.InsertPlanet(&entities.Planet{Id: 1, Name: "marte", Land: "random",
@@ -174,7 +132,7 @@ func TestGetPlanet(t *testing.T) {
 
 func TestGetPlanetById(t *testing.T) {
 
-	RunTest(func() {
+	runTest(func() {
 		rest := &gofight.RequestConfig{Debug: true}
 
 		repository.InsertPlanet(&entities.Planet{Id: 1, Name: "marte", Land: "random",
@@ -191,7 +149,7 @@ func TestGetPlanetById(t *testing.T) {
 
 func TestGetPlanetNotFound(t *testing.T) {
 
-	RunTest(func() {
+	runTest(func() {
 		rest := &gofight.RequestConfig{Debug: true}
 
 		rest.GET("/planets/1").
@@ -203,7 +161,7 @@ func TestGetPlanetNotFound(t *testing.T) {
 
 func TestDeletePlanet(t *testing.T) {
 
-	RunTest(func() {
+	runTest(func() {
 		rest := &gofight.RequestConfig{Debug: true}
 
 		repository.InsertPlanet(&entities.Planet{Id: 1, Name: "marte", Land: "random",
@@ -222,7 +180,7 @@ func TestDeletePlanet(t *testing.T) {
 
 func TestDeletePlanetNotExist(t *testing.T) {
 
-	RunTest(func() {
+	runTest(func() {
 		rest := &gofight.RequestConfig{Debug: true}
 
 		rest.DELETE("/planets/1").

@@ -23,7 +23,7 @@ func UpdatePlanet(request *requests.PlanetRequest, id int) {
 		log.Panic(err)
 	}
 
-	planet := CreatePlanet(request)
+	planet := mapToEntityPlanet(request)
 
 	err = repository.UpdatePlanet(&planet, id)
 
@@ -39,7 +39,7 @@ func FindPlanets() *[]responses.PlanetResponse {
 
 	for _, planet := range planets {
 		planetsResponse = append(planetsResponse,
-			CreatePlanetResponse(strconv.Itoa(planet.Id), &planet))
+			mapToResponsePlanet(strconv.Itoa(planet.Id), &planet))
 	}
 
 	if err != nil {
@@ -56,7 +56,7 @@ func FindPlanetById(id int) *responses.PlanetResponse {
 		panic(exception.NewNotFoundException(fmt.Sprintf("Planet %d was not found", id)))
 	}
 
-	planetResponse := CreatePlanetResponse(strconv.Itoa(id), result)
+	planetResponse := mapToResponsePlanet(strconv.Itoa(id), result)
 
 	if err != nil {
 		log.Panic("<FindPlanetById> An error ocurred during select by id", err)
@@ -66,7 +66,7 @@ func FindPlanetById(id int) *responses.PlanetResponse {
 
 func InsertPlanet(request *requests.PlanetRequest) {
 
-	planet := CreatePlanet(request)
+	planet := mapToEntityPlanet(request)
 
 	planetByName := repository.ExistsPlanetByName(planet.Name)
 
@@ -110,7 +110,7 @@ func validadePlanet(id int) error {
 	return nil
 }
 
-func CreatePlanetResponse(id string, planet *entities.Planet) (response responses.PlanetResponse) {
+func mapToResponsePlanet(id string, planet *entities.Planet) (response responses.PlanetResponse) {
 
 	return responses.PlanetResponse{
 		Id:         id,
@@ -119,10 +119,9 @@ func CreatePlanetResponse(id string, planet *entities.Planet) (response response
 		Land:       planet.Land,
 		Atmosphere: planet.Atmosphere,
 	}
-
 }
 
-func CreatePlanet(request *requests.PlanetRequest) entities.Planet {
+func mapToEntityPlanet(request *requests.PlanetRequest) entities.Planet {
 
 	return entities.Planet{
 		Name:       request.Name,

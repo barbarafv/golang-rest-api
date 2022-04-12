@@ -17,6 +17,7 @@ require (
 	github.com/DATA-DOG/go-txdb v0.1.5 // indirect
 	github.com/Microsoft/go-winio v0.5.0 // indirect
 	github.com/Microsoft/hcsshim v0.8.21 // indirect
+	github.com/appleboy/gofight v2.0.0+incompatible // indirect
 	github.com/appleboy/gofight/v2 v2.1.2 // indirect
 	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
 	github.com/containerd/cgroups v1.0.1 // indirect

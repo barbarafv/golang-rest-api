@@ -28,9 +28,9 @@ func BuildDBConfig() string {
 }
 
 func AutoMigrate() {
-	db.AutoMigrate(&entities.Planet{})
+	db.AutoMigrate(&entities.Planet{}, &entities.User{})
 }
 
 func DropAll() {
-	db.DropTable(&entities.Planet{})
+	db.DropTable(&entities.Planet{}, &entities.User{})
 }

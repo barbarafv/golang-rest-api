@@ -8,15 +8,12 @@ import (
 
 func FindPlanets() ([]entities.Planet, error) {
 	planets := []entities.Planet{}
-
 	return planets, db.Find(&planets).Error
 }
 
 func FindPlanetById(id int) (*entities.Planet, error) {
 	planets := entities.Planet{}
-
-	err := db.Where("id = ?", id).First(&planets).Error
-	return &planets, err
+	return &planets, db.Where("id = ?", id).First(&planets).Error
 }
 
 func UpdatePlanet(planet *entities.Planet, id int) error {
