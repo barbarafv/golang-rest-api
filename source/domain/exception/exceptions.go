@@ -9,8 +9,8 @@ type HttpException struct {
 	Message    string
 }
 
-func NewNotFoundException(message string) HttpException {
-	return HttpException{
+func NewNotFoundException(message string) *HttpException {
+	return &HttpException{
 		StatusCode: http.StatusNotFound,
 		Message:    message,
 	}

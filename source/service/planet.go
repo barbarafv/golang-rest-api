@@ -10,27 +10,22 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/jinzhu/gorm"
 )
 
 func UpdatePlanet(request *requests.PlanetRequest, id int) {
 
-	err := validadePlanet(id)
-
-	if err != nil {
-		log.Panic(err)
-	}
+	FindPlanetById(id)
 
 	planet := mapToEntityPlanet(request)
 
-	err = repository.UpdatePlanet(&planet, id)
+	err := repository.UpdatePlanet(&planet, id)
 
 	if err != nil {
 		log.Panic("<UpdatePlanet> An error ocurred during update", err)
 	}
-
 }
 
 func FindPlanets() *[]responses.PlanetResponse {
@@ -86,28 +81,12 @@ func DeletePlanet(id int) {
 	err := repository.DeletePlanet(id)
 
 	if err != nil {
-		if err == gorm.ErrRecordNotFound {
+		if strings.Contains(fmt.Sprint(err), "record not found") {
 			panic(&exception.HttpException{StatusCode: http.StatusNotFound,
 				Message: fmt.Sprintf("Planet cannot deleted because id %d was not found", id)})
 		}
 		log.Panic("An error ocurred during delete", err)
 	}
-}
-
-func validadePlanet(id int) error {
-
-	planetToUpdate, err := repository.FindPlanetById(id)
-
-	if err != nil {
-		panic(&exception.HttpException{StatusCode: http.StatusNotFound,
-			Message: fmt.Sprintf("Planet with id %d not found", id)})
-	}
-
-	if planetToUpdate == nil {
-		return entities.ErrPlanetNotExists
-	}
-
-	return nil
 }
 
 func mapToResponsePlanet(id string, planet *entities.Planet) (response responses.PlanetResponse) {

@@ -4,16 +4,22 @@ import (
 	"app/source/controllers/requests"
 	"app/source/controllers/responses"
 	"app/source/domain/entities"
+	"app/source/domain/exception"
 	"app/source/repository"
 	"app/source/utils"
+	"fmt"
 	"html"
 	"log"
+	"net/http"
 	"strings"
 	"time"
+
+	"github.com/jinzhu/gorm"
 )
 
 func BeforeSaveUser(request *requests.UserRequest) error {
 	hashedPassword, err := utils.Hash(request.Password)
+
 	if err != nil {
 		return err
 	}
@@ -23,15 +29,19 @@ func BeforeSaveUser(request *requests.UserRequest) error {
 
 func prepareUser(request *requests.UserRequest) {
 	request.Email = html.EscapeString(strings.TrimSpace(request.Email))
-	request.CreatedAt = time.Now()
-	request.UpdatedAt = time.Now()
 }
 
 func InsertUser(userRequest *requests.UserRequest) {
 
 	prepareUser(userRequest)
 
-	user := mapUserRequestToEntity(userRequest)
+	user := entities.User{
+		Login:     userRequest.Login,
+		Email:     userRequest.Email,
+		Password:  userRequest.Password,
+		CreatedAt: time.Now(),
+		UpdateAt:  time.Time{},
+	}
 
 	err := repository.InsertUser(&user)
 
@@ -40,26 +50,55 @@ func InsertUser(userRequest *requests.UserRequest) {
 	}
 }
 
-func mapUserEntityToResponse(id string, planet *entities.User) (response responses.UserResponse) {
+func FindUserById(id int) *responses.UserResponse {
+	result, err := repository.FindUserById(id)
+
+	if err != nil {
+		panic(exception.NewNotFoundException(fmt.Sprintf("User id %d was not found", id)))
+	}
+
+	userResponse := mapUserEntityToResponse(result)
+	return &userResponse
+}
+
+func UpdateUser(userRequest *requests.UserRequest, id int) {
+
+	prepareUser(userRequest)
+	userFounded := FindUserById(id)
+
+	user := entities.User{
+		ID:       userFounded.ID,
+		Login:    userRequest.Login,
+		Email:    userRequest.Email,
+		Password: userRequest.Password,
+	}
+	err := repository.UpdateUser(&user)
+
+	if err != nil {
+		log.Panic("<UpdateUser> An error ocurred during update", err)
+	}
+}
+
+func DeleteUser(id int) {
+	err := repository.DeleteUser(id)
+
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			panic(&exception.HttpException{StatusCode: http.StatusNotFound,
+				Message: fmt.Sprintf("Planet cannot deleted because id %d was not found", id)})
+		}
+		log.Panic("An error ocurred during delete", err)
+	}
+}
+
+func mapUserEntityToResponse(planet *entities.User) (response responses.UserResponse) {
 
 	return responses.UserResponse{
-		Id:        response.Id,
+		ID:        response.ID,
 		Login:     response.Login,
 		Email:     response.Email,
 		Password:  response.Password,
 		CreatedAt: response.CreatedAt,
 		UpdatedAt: response.UpdatedAt,
-	}
-
-}
-
-func mapUserRequestToEntity(request *requests.UserRequest) entities.User {
-
-	return entities.User{
-		Login:     request.Login,
-		Email:     request.Email,
-		Password:  request.Password,
-		CreatedAt: request.CreatedAt,
-		UpdateAt:  request.UpdatedAt,
 	}
 }

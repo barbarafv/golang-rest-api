@@ -154,7 +154,7 @@ func TestGetPlanetNotFound(t *testing.T) {
 
 		rest.GET("/planets/1").
 			Run(router, func(response gofight.HTTPResponse, request gofight.HTTPRequest) {
-				assert.Equal(t, http.StatusInternalServerError, response.Code)
+				assert.Equal(t, http.StatusNotFound, response.Code)
 			})
 	})
 }
@@ -185,7 +185,7 @@ func TestDeletePlanetNotExist(t *testing.T) {
 
 		rest.DELETE("/planets/1").
 			Run(router, func(response gofight.HTTPResponse, request gofight.HTTPRequest) {
-				assert.Equal(t, http.StatusInternalServerError, response.Code)
+				assert.Equal(t, http.StatusNotFound, response.Code)
 			})
 	})
 

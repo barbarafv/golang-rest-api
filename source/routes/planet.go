@@ -16,4 +16,8 @@ func bindPlanetRoutes(router *gin.Engine) {
 
 	users := router.Group("/users")
 	users.POST("", controllers.InsertUser)
+	users.PUT("/:id", controllers.UpdateUser)
+	users.GET("/:id", controllers.FindUserById)
+	users.DELETE("/:id", controllers.DeleteUser)
+
 }
